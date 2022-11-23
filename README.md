@@ -1,7 +1,7 @@
 # Data Collection Pipeline
 This project creates a webscraper for coinmarket.com using selenium in python. Coinmarket.com collates all of the registered cryptocurrencies and their details such as pricing, all time highs, market cap, daily trading volume which are all useful metrics for understanding the cyrptocurrency, it's history and current performance. Many people investing and trading with crypotcurrency utilise these metrics to make informed financial decisions.
 
-# Mielstone 3
+## Milestone 3
 The project uses chromedriver to control the webpage. Using selenium, this milestone scrapes the links of each page on the webpage and then itterates through each webpage to scrape and collate all of the individual coin page links. These are then added to a list which will then be itterable for collecting data in later milestones.
 
 ```
