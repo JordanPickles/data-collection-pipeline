@@ -1,0 +1,52 @@
+[
+        {
+                "Name": "Bitcoin",
+                "Image": "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+                "Price": "$16,564.74",
+                "Market Cap": "$318,348,390,814.65",
+                "24hr Trading Volume": "$19,599,625,592.02",
+                "24hr Price Low": "$16,416.23",
+                "24hrPrice High": "$16,580.59",
+                "Timestamp": "27-11-2022, 20:44:35"
+        },
+        {
+                "Name": "Ethereum",
+                "Image": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+                "Price": "$1,214.16",
+                "Market Cap": "$148,580,965,533.49",
+                "24hr Trading Volume": "$4,199,027,008.01",
+                "24hr Price Low": "$1,201.03",
+                "24hrPrice High": "$1,220.35",
+                "Timestamp": "27-11-2022, 20:44:58"
+        },
+        {
+                "Name": "Tether",
+                "Image": "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
+                "Price": "$0.9995",
+                "Market Cap": "$65,332,325,729.80",
+                "24hr Trading Volume": "$26,545,808,725.42",
+                "24hr Price Low": "$0.9995",
+                "24hrPrice High": "$0.9996",
+                "Timestamp": "27-11-2022, 20:45:14"
+        },
+        {
+                "Name": "BNB",
+                "Image": "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
+                "Price": "$313.05",
+                "Market Cap": "$50,078,288,068.56",
+                "24hr Trading Volume": "$755,900,183.56",
+                "24hr Price Low": "$309.14",
+                "24hrPrice High": "$316.22",
+                "Timestamp": "27-11-2022, 20:45:32"
+        },
+        {
+                "Name": "USD Coin",
+                "Image": "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+                "Price": "$1.00",
+                "Market Cap": "$44,210,314,311.25",
+                "24hr Trading Volume": "$2,204,517,900.92",
+                "24hr Price Low": "$0.9999",
+                "24hrPrice High": "$1.00",
+                "Timestamp": "27-11-2022, 20:45:59"
+        }
+]
