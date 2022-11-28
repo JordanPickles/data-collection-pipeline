@@ -48,7 +48,7 @@ class CoinMarketScraper:
             self.page_links_list.append(link) # appends the href to a list containing all the hrefs
 
     def page_itteration(self):
-        for page in self.page_links_list[:1]: # Itterates through the first 2 pages of the code
+        for page in self.page_links_list[:2]: # Itterates through the first 2 pages of the code
             self.driver.get(page) # uses the get function to load the the webpage next in the self.link_list
             self.get_coin_links() #calls the method to scrape all of the coin links on the page
 
@@ -192,7 +192,7 @@ class CoinMarketScraper:
     def coin_itteration(self):
         delay = 20  
         coin_data = []
-        for coin in self.coin_link_list[0:5]: # Itterates through each coin link
+        for coin in self.coin_link_list: # Itterates through each coin link
             self.driver.get(coin) # loads each coin page
             WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]'))) # Ensures each page is loaded before continuing the code
             self.coin_data(self.get_data()) # Calls the get data method for each coin and appends the data to self.coin_data
