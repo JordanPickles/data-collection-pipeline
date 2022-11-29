@@ -69,12 +69,9 @@ class CoinMarketScraper:
         print(self.coin_link_list)
 
     
-    # The following method scrapes the desired metric and value for the coin page provided. Each metric has 3 find_element options as different coin pages have differing code structures. 
-    # These 3 find_element lines of code cover all of the differing structures, should none of these be found in the webpage, "NA" is added to the list for that page itteration
-
-
+    # The following method scrapes the desired metric and value for the coin page provided. 
     def get_data(self):
-        data_dict = {} # Provides a local empty dictionary for every coin that is itterated
+        webpage_data_dict = {} # Provides a local empty dictionary for every coin that is itterated
 
         # Scrapes the required data from eeach page
         coin_name = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aba8b85a-0 gmYubB h1"]/span/span').text
@@ -90,16 +87,16 @@ class CoinMarketScraper:
         
         str_time_stamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%d-%m-%Y, %H:%M:%S") # Provides a time stamp for each page that is scraped
         
-        
-        data_dict['Name'] = coin_name
-        data_dict['Price'] = price
-        data_dict['Market Cap'] = market_cap
-        data_dict['24hr Trading Volume'] = daily_volume
-        data_dict['24hr Price Low'] = daily_low
-        data_dict['24hr Price High'] = daily_high
-        data_dict['Image'] = coin_img_src
-        data_dict['Timestamp'] = str_time_stamp
-        return data_dict 
+        # Updates the local webpage_data dict
+        webpage_data_dict['Name'] = coin_name
+        webpage_data_dict['Price'] = price
+        webpage_data_dict['Market Cap'] = market_cap
+        webpage_data_dict['24hr Trading Volume'] = daily_volume
+        webpage_data_dict['24hr Price Low'] = daily_low
+        webpage_data_dict['24hr Price High'] = daily_high
+        webpage_data_dict['Image'] = coin_img_src
+        webpage_data_dict['Timestamp'] = str_time_stamp
+        return webpage_data_dict 
         
     # This method calls the coin image src and the filepath set in the get data method to download the image stored on each coin page
     def download_image_from_webpage(self, coin_img_src, fp):
