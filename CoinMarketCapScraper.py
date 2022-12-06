@@ -15,12 +15,8 @@ import requests
 
 
 class CoinMarketScraper:
-    '''
-    This class automates the coinmarketcap.com and navigates through the webpage to collect desired data regarding each cryptocurrency coin within the desired page range    
-
-    '''
-
-     
+    """This class automates the coinmarketcap.com and navigates through the webpage to collect desired data regarding each cryptocurrency coin within the desired page range"""     
+    
     def __init__(self):
         """
         This method initialisess the CoinMarketScraper Class and passing the attributes
@@ -52,7 +48,6 @@ class CoinMarketScraper:
         This method calls the chromedriver to load the webpage and performs a check to ensure the webpage has loaded successfully or not. 
         If the pop up does not occure then the argument is passed
         """
-        
         try:
             page = self.driver.get(self.url)
             WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body')))
@@ -61,8 +56,6 @@ class CoinMarketScraper:
             "The page was not loaded successfully"
 
     
-
-       
     def create_list_of_webpage_links(self):
         """
         This method scrapes the webpage links for the following pages on the coinmarketcap.com site. 
@@ -71,8 +64,6 @@ class CoinMarketScraper:
         To do this, the method identifies the li tags which are present for each page of the website.
         Within the li tags, all of the a tags are stored, the a tags contain the desired urls for each page.
         """  
-        
-        
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
         time.sleep(3)
         
@@ -84,8 +75,6 @@ class CoinMarketScraper:
             self.page_links_list.append(link)
         
         
-
-    
     def create_list_of_coin_links(self):
         """
         This method scrapes the page provided for the cryptocurrency coin links that are stored on that page.
@@ -120,12 +109,9 @@ class CoinMarketScraper:
             WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body'))) 
             self.create_list_of_coin_links()
         
-        
-        
-         
 
-    
     def load_coin_webpage(self, coin_link):
+        "Loads the url provided during the coin_link_iteration() method when called"
         self.driver.get(coin_link)
         try:
             pop_up_button = self.driver.find_element(by=By.XPATH, value = '/html/body/div[3]/div/div/div/div/button[2]')
@@ -160,22 +146,17 @@ class CoinMarketScraper:
         The dictionary is returned at the end of the method.       
         
         """
-         
-        
         coin_name = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aba8b85a-0 gmYubB h1"]/span/span').text
         price = self.driver.find_element(by=By.XPATH, value = '//*[@class="priceValue "]').text                                                          
         market_cap = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[2]/div/div[3]/div[1]/div[1]/div[1]/div[2]/div').text
         daily_volume = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[2]/div/div[3]/div[1]/div[3]/div[1]/div[2]/div').text
         daily_low = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aef7b723-0 kIYhSM"]/span/span').text
         daily_high = self.driver.find_element(by=By.XPATH, value = '//*[@class = "sc-aef7b723-0 gjeJMv"]/span/span').text
-          
-        
-        
+
         str_time_stamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%d-%m-%Y, %H:%M:%S")
         coin_img_src = self.driver.find_element(by=By.TAG_NAME, value = 'img').get_attribute('src')
         self.download_image_from_webpage(coin_img_src, f"images/{coin_name}_{str_time_stamp}.jpg")
-        
-        
+                
         self.data_dict['Name'] = coin_name
         self.data_dict['Price'] = price
         self.data_dict['Market Cap'] = market_cap
