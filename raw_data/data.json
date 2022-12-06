@@ -1,32 +1,32 @@
 [
         {
-                "Name": "Bitcoin",
-                "Price": "$16,940.81",
-                "Market Cap": "$325,636,077,104",
-                "24hr Trading Volume": "$23,871,045,371",
-                "24hr Price Low": "$16,888.39",
-                "24hr Price High": "$17,197.50",
+                "Name": "Tether",
+                "Price": "$1.00",
+                "Market Cap": "$65,581,747,034",
+                "24hr Trading Volume": "$25,218,142,145",
+                "24hr Price Low": "$1.00",
+                "24hr Price High": "$1.00",
                 "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "01-12-2022, 22:16:39"
-        },
-        {
-                "Name": "Ethereum",
-                "Price": "$1,275.69",
-                "Market Cap": "$156,111,637,093",
-                "24hr Trading Volume": "$7,193,232,668",
-                "24hr Price Low": "$1,267.71",
-                "24hr Price High": "$1,302.04",
-                "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "01-12-2022, 22:16:57"
+                "Timestamp": "06-12-2022, 17:25:34"
         },
         {
                 "Name": "Tether",
                 "Price": "$1.00",
-                "Market Cap": "$65,365,604,874",
-                "24hr Trading Volume": "$31,041,122,379",
-                "24hr Price Low": "$0.9999",
+                "Market Cap": "$65,581,747,034",
+                "24hr Trading Volume": "$25,218,142,145",
+                "24hr Price Low": "$1.00",
                 "24hr Price High": "$1.00",
                 "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "01-12-2022, 22:17:12"
+                "Timestamp": "06-12-2022, 17:25:34"
+        },
+        {
+                "Name": "Tether",
+                "Price": "$1.00",
+                "Market Cap": "$65,581,747,034",
+                "24hr Trading Volume": "$25,218,142,145",
+                "24hr Price Low": "$1.00",
+                "24hr Price High": "$1.00",
+                "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
+                "Timestamp": "06-12-2022, 17:25:34"
         }
 ]

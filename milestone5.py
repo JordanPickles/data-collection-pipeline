@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
+
 import time
 from datetime import datetime
 import json
@@ -48,16 +49,18 @@ class CoinMarketScraper:
 
     def load_webpage(self): 
         """
-        This method calls the chromedriver to load the webpage and closes a pop-up that may occur once the page is loaded. 
+        This method calls the chromedriver to load the webpage and performs a check to ensure the webpage has loaded successfully or not. 
         If the pop up does not occure then the argument is passed
         """
-        page = self.driver.get(self.url)
-
+        
         try:
-            pop_up_button = self.driver.find_element(by=By.XPATH, value = '/html/body/div[3]/div/div/div/div/button[2]')
-            pop_up_button.click()
-        except NoSuchElementException:
-            pass
+            page = self.driver.get(self.url)
+            WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body')))
+            return 'The page was loaded successfully'
+        except TimeoutException:
+            "The page was not loaded successfully"
+
+    
 
        
     def create_list_of_webpage_links(self):
@@ -68,24 +71,19 @@ class CoinMarketScraper:
         To do this, the method identifies the li tags which are present for each page of the website.
         Within the li tags, all of the a tags are stored, the a tags contain the desired urls for each page.
         """  
-        time.sleep(5)
+        
+        
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
+        time.sleep(3)
+        
         page_number_bar = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[6]/div[1]/div/ul') 
         li_tags = page_number_bar.find_elements(by=By.XPATH, value = '//*[@class="page"]') 
         
         for link in li_tags: 
             link = link.find_element(by=By.TAG_NAME, value = 'a').get_attribute('href')
-            self.page_links_list.append(link) 
-
-    def webpage_links_iteration(self):
-        """
-        This method iterates through the page_links_list created in the create_list_of_webpage_links function above.
-        The driver attribute is called to load each page.
-        Once each page has been loaded, the create_list_of_coin_links function is called
-        """
-        for page in self.page_links_list[:2]: #
-            self.driver.get(page) 
-            self.create_list_of_coin_links()
+            self.page_links_list.append(link)
+        
+        
 
     
     def create_list_of_coin_links(self):
@@ -95,21 +93,52 @@ class CoinMarketScraper:
         Once the table is found, it is iterated through to find the links and then appends the links to the link list.
         The link list is a local variable list to this method, for the current page provided, all of the coin links on the page are added to this list.
         The link_list for that page is then added to the self.coin_link_list through .extend in which this list contains all of the coin links on all of the pages iterated through.
-        """ # 
-        delay = 20
+        """ 
         link_list = [] 
         ignored_exceptions= (StaleElementReferenceException)
-        WebDriverWait(self.driver, delay,ignored_exceptions=ignored_exceptions).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]'))) 
+        WebDriverWait(self.driver, 20,ignored_exceptions=ignored_exceptions).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]'))) 
+
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
-        time.sleep(1) 
+        time.sleep(2)
         table = self.driver.find_element(by=By.XPATH, value='//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[4]/table/tbody') 
         table_list = table.find_elements(by=By.XPATH, value = './tr') 
         for coin in table_list: 
             link = coin.find_element(by=By.TAG_NAME, value = 'a').get_attribute('href') 
             link_list.append(link) 
         self.coin_link_list.extend(link_list) 
+        
+
+    def webpage_links_iteration(self): 
+        """
+        This method iterates through the page_links_list created in the create_list_of_webpage_links function above.
+        The driver attribute is called to load each page.
+        Once each page has been loaded, the create_list_of_coin_links function is called
+        """
+
+        for page in self.page_links_list[:2]: #
+            self.driver.get(page)
+            WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body'))) 
+            self.create_list_of_coin_links()
+        
+        
+        
+         
 
     
+    def load_coin_webpage(self, coin_link):
+        self.driver.get(coin_link)
+        try:
+            pop_up_button = self.driver.find_element(by=By.XPATH, value = '/html/body/div[3]/div/div/div/div/button[2]')
+            pop_up_button.click()
+        except NoSuchElementException:
+            pass
+        
+        try:
+            WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//*[@class="main-content"]'))) 
+            return "The page was loaded successfully"
+        except TimeoutException:
+            return "The page was not loaded successfully"
+
      
     def scrape_webpage_data(self): 
         """
@@ -130,36 +159,34 @@ class CoinMarketScraper:
 
         The dictionary is returned at the end of the method.       
         
-        """"
+        """
+         
         
-        
-        webpage_data_dict = {} 
-
         coin_name = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aba8b85a-0 gmYubB h1"]/span/span').text
-        price = self.driver.find_element(by=By.CLASS_NAME, value = 'priceValue ').text
+        price = self.driver.find_element(by=By.XPATH, value = '//*[@class="priceValue "]').text                                                          
         market_cap = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[2]/div/div[3]/div[1]/div[1]/div[1]/div[2]/div').text
         daily_volume = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[2]/div/div[3]/div[1]/div[3]/div[1]/div[2]/div').text
         daily_low = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aef7b723-0 kIYhSM"]/span/span').text
         daily_high = self.driver.find_element(by=By.XPATH, value = '//*[@class = "sc-aef7b723-0 gjeJMv"]/span/span').text
+          
         
-        
-        coin_img_src = self.driver.find_element(by=By.TAG_NAME, value = 'img').get_attribute('src')
-        self.download_image_from_webpage(coin_img_src, f"images/{coin_name}_{datetime.now()}.jpg")
         
         str_time_stamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%d-%m-%Y, %H:%M:%S")
+        coin_img_src = self.driver.find_element(by=By.TAG_NAME, value = 'img').get_attribute('src')
+        self.download_image_from_webpage(coin_img_src, f"images/{coin_name}_{str_time_stamp}.jpg")
         
         
-        webpage_data_dict['Name'] = coin_name
-        webpage_data_dict['Price'] = price
-        webpage_data_dict['Market Cap'] = market_cap
-        webpage_data_dict['24hr Trading Volume'] = daily_volume
-        webpage_data_dict['24hr Price Low'] = daily_low
-        webpage_data_dict['24hr Price High'] = daily_high
-        webpage_data_dict['Image'] = coin_img_src
-        webpage_data_dict['Timestamp'] = str_time_stamp
-        return webpage_data_dict 
+        self.data_dict['Name'] = coin_name
+        self.data_dict['Price'] = price
+        self.data_dict['Market Cap'] = market_cap
+        self.data_dict['24hr Trading Volume'] = daily_volume
+        self.data_dict['24hr Price Low'] = daily_low
+        self.data_dict['24hr Price High'] = daily_high
+        self.data_dict['Image'] = coin_img_src
+        self.data_dict['Timestamp'] = str_time_stamp
         
-    # 
+        return self.data_dict 
+    
     def download_image_from_webpage(self, coin_img_src, fp):
 
         """
@@ -187,18 +214,10 @@ class CoinMarketScraper:
         The self.coin_data_list data is then dumped into a JSON file in a raw_data folder, both created using the OS context manager
         
         """
-        delay = 20  
         for coin_link in self.coin_link_list[0:3]: 
-            self.driver.get(coin_link) 
-            
-            try:
-                pop_up_button = self.driver.find_element(by=By.XPATH, value = '/html/body/div[3]/div/div/div/div/button[2]')
-                pop_up_button.click()
-            except NoSuchElementException:
-                pass
-
-            WebDriverWait(self.driver, delay).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]'))) 
+            self.load_coin_webpage(coin_link)
             self.coin_data.append(self.scrape_webpage_data()) 
+            
 
         if os.path.exists("raw_data") == False: 
             os.makedirs("raw_data") 
