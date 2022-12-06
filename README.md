@@ -1,5 +1,10 @@
 # Data Collection Pipeline
-This project creates a webscraper for coinmarket.com using selenium in python. Coinmarket.com collates all of the registered cryptocurrencies and their details such as pricing, all time highs, market cap, daily trading volume which are all useful metrics for understanding the cyrptocurrency, it's history and current performance. Many people investing and trading with crypotcurrency utilise these metrics to make informed financial decisions.
+This project creates an industry grade webscraper for coinmarketcap.com using selenium in python. This project forms project 3 of the AICore data career accelorator course.
+
+CoinMarketCap is the world's most-referenced price-tracking website for cryptoassets in the rapidly growing cryptocurrency space. Its mission is to make crypto discoverable and efficient globally by empowering retail users with unbiased, high quality and accurate information for drawing their own informed conclusions.
+
+Coinmarketcap.com collates all of the registered cryptocurrencies and their details such as pricing, all time highs, market cap, daily trading volume which are all useful metrics for understanding the cyrptocurrency, it's history and current performance. Many people investing and trading with crypotcurrencies utilise these metrics to make informed financial decisions.
+
 
 ## Milestone 1-4: Developing the web scraper
 The project uses chromedriver to control the webpage. Using selenium, this milestone scrapes the links of each page on the webpage and then iterates through each webpage to scrape and collate all of the individual coin page links. These are then added to a list which will then be itterable for collecting data in later milestones.
@@ -37,7 +42,7 @@ class CoinMarketScraper:
         self.coin_data = []
         
 ```
-Calling the chromedriver, the coinmarket.com url was loaded and a list of the page url's containing cryptocurrency coins data and urls was collected.
+Calling the chromedriver, the coinmarketcap.com url was loaded and a list of the page url's containing cryptocurrency coins data and urls was collected.
 
 ```
 def load_webpage(self): 
@@ -111,7 +116,7 @@ The create_list_of_coin_links method scrapes the url links of all the coins cont
             WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body'))) 
             self.create_list_of_coin_links()
 ```
-Once the list of the coin urls was collected the below methods were created to be called later in the script. The load_coin_webpage() method calls the chromedriver to load the url provided by the coin_link_iteration() method. The scrape_webpage_data uses locators within selenium to locate and scrape different data points on each page. The coinmarket.com site has a slightly different structure for coins listed 1-10, 11-25 and 25-100. Therefore the locators were chosen to most effectively scrape the data from coin pages in all 3 brackets/sections. The download_image_from_webpage() method downloads the image from the image src scraped on each page and stores it locally using a context manager.
+Once the list of the coin urls was collected the below methods were created to be called later in the script. The load_coin_webpage() method calls the chromedriver to load the url provided by the coin_link_iteration() method. The scrape_webpage_data uses locators within selenium to locate and scrape different data points on each page. The coinmarketcap.com site has a slightly different structure for coins listed 1-10, 11-25 and 25-100. Therefore the locators were chosen to most effectively scrape the data from coin pages in all 3 brackets/sections. The download_image_from_webpage() method downloads the image from the image src scraped on each page and stores it locally using a context manager.
 
 ```
     
