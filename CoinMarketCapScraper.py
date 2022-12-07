@@ -43,7 +43,7 @@ class CoinMarketScraper:
         self.coin_data = []
 
 
-    def load_webpage(self): 
+    def load_webpage(self) -> str: 
         """
         This method calls the chromedriver to load the webpage and performs a check to ensure the webpage has loaded successfully or not. 
         If the pop up does not occure then the argument is passed
@@ -75,7 +75,7 @@ class CoinMarketScraper:
             self.page_links_list.append(link)
         
         
-    def create_list_of_coin_links(self):
+    def create_list_of_coin_links(self) -> list:
         """
         This method scrapes the page provided for the cryptocurrency coin links that are stored on that page.
         To do this, the method finds the table in the html code within which all of these links are stored in.
@@ -95,6 +95,7 @@ class CoinMarketScraper:
             link = coin.find_element(by=By.TAG_NAME, value = 'a').get_attribute('href') 
             link_list.append(link) 
         self.coin_link_list.extend(link_list) 
+        return self.coin_link_list
         
 
     def webpage_links_iteration(self): 
@@ -110,7 +111,7 @@ class CoinMarketScraper:
             self.create_list_of_coin_links()
         
 
-    def load_coin_webpage(self, coin_link):
+    def load_coin_webpage(self, coin_link) -> str:
         "Loads the url provided during the coin_link_iteration() method when called"
         self.driver.get(coin_link)
         try:
@@ -126,7 +127,7 @@ class CoinMarketScraper:
             return "The page was not loaded successfully"
 
      
-    def scrape_webpage_data(self): 
+    def scrape_webpage_data(self) -> dict: 
         """
         The following method scrapes the data for the desired metric for the coin page provided.
         Using the .find_element function along with locators within selenium, the location of the desired metric is sourced.
@@ -152,7 +153,6 @@ class CoinMarketScraper:
         daily_volume = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[2]/div/div[3]/div[1]/div[3]/div[1]/div[2]/div').text
         daily_low = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aef7b723-0 kIYhSM"]/span/span').text
         daily_high = self.driver.find_element(by=By.XPATH, value = '//*[@class = "sc-aef7b723-0 gjeJMv"]/span/span').text
-
         str_time_stamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%d-%m-%Y, %H:%M:%S")
         coin_img_src = self.driver.find_element(by=By.TAG_NAME, value = 'img').get_attribute('src')
         self.download_image_from_webpage(coin_img_src, f"images/{coin_name}_{str_time_stamp}.jpg")
@@ -195,7 +195,7 @@ class CoinMarketScraper:
         The self.coin_data_list data is then dumped into a JSON file in a raw_data folder, both created using the OS context manager
         
         """
-        for coin_link in self.coin_link_list[0:3]: 
+        for coin_link in self.coin_link_list: 
             self.load_coin_webpage(coin_link)
             self.coin_data.append(self.scrape_webpage_data()) 
             
