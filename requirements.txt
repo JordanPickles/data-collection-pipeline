@@ -1,4 +1,4 @@
-async-generator==1.10
+git async-generator==1.10
 attrs==22.1.0
 certifi @ file:///private/var/folders/sy/f16zz6x50xz3113nwtb9bvq00000gp/T/abs_0ek9yztvu3/croot/certifi_1665076692562/work/certifi
 charset-normalizer==2.1.1
