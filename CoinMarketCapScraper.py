@@ -43,7 +43,7 @@ class CoinMarketScraper:
 
 
     def load_webpage(self) -> str: 
-        """Loads the webpage using chromedriver"""
+        """This public emthod loads the webpage using chromedriver"""
         try:
             self.driver.get(self.url)
             WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body')))
@@ -54,7 +54,7 @@ class CoinMarketScraper:
     
     def create_list_of_webpage_links(self):
         """
-        This method collates links for following pages on coinmarketcap.com and appends them to a list.
+        This public method collates links for following pages on coinmarketcap.com and appends them to a list.
         ------------------------------------------------------------------------------------------------------
         page_number_bar: HTML Tree
             Locates the HTML tree in which the page urls are found
@@ -74,7 +74,7 @@ class CoinMarketScraper:
         
     def create_list_of_coin_links(self):
         """
-        This method scrapes the page provided for the cryptocurrency coin links that are stored on that page. The links on each page are added to the self.coin_link_list
+        This public method scrapes the page provided for the cryptocurrency coin links that are stored on that page. The links on each page are added to the self.coin_link_list
         --------------------------------------------------------------------------------------------------------
         link_list: List
             Local list to this method used store the coin page urls on each page before being extended to the bigger self.coin_link_list
@@ -110,26 +110,10 @@ class CoinMarketScraper:
             WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body'))) 
             self.create_list_of_coin_links()
         
-
-    def load_coin_webpage(self, coin_link) -> str:
-        """This method loads the url provided during the coin_link_iteration() method when called. It checks for an expected pop-up and closes it if the pop-up is located"""
-        self.driver.get(coin_link)
-        try:
-            pop_up_button = self.driver.find_element(by=By.XPATH, value = '/html/body/div[3]/div/div/div/div/button[2]')
-            pop_up_button.click()
-        except NoSuchElementException:
-            pass
-        
-        try:
-            WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//*[@class="main-content"]'))) 
-            return "The page was loaded successfully"
-        except TimeoutException:
-            return "The page was not loaded successfully"
-
      
-    def scrape_webpage_data(self) -> dict: 
+    def __scrape_webpage_data(self, coin_link) -> dict: 
         """
-        This method scrapes the data for the desired metric for the coin page provided. The data is added to the self.data_dict.
+        This private method scrapes the data for the desired metric for the coin page loaded. The data is added to the self.data_dict.
         ---------------------------------------------------------------------------------------------------------------------
         Name: String
             Cryptocurrency Coin Name
@@ -150,15 +134,23 @@ class CoinMarketScraper:
 
         Returns: self.data_dict is returned at the end of the method containing the data scraped from each Cryptocurrency Coin page.
         """
+        self.driver.get(coin_link)
+        try:
+            pop_up_button = self.driver.find_element(by=By.XPATH, value = '/html/body/div[3]/div/div/div/div/button[2]')
+            pop_up_button.click()
+        except NoSuchElementException:
+            pass
+        WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//*[@class="main-content"]')))
+
         coin_name = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aba8b85a-0 gmYubB h1"]/span/span').text
-        price = self.driver.find_element(by=By.XPATH, value = '//*[@class="priceValue "]').text                                                          
-        market_cap = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[2]/div/div[3]/div[1]/div[1]/div[1]/div[2]/div').text
-        daily_volume = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[2]/div/div[3]/div[1]/div[3]/div[1]/div[2]/div').text
+        price = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aef7b723-0 dDQUel priceTitle"]/div').text          
+        market_cap = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aef7b723-0 eslelo statsSection"]/div[1]/div[1]/div[1]/div[2]/div').text
+        daily_volume = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aef7b723-0 eslelo statsSection"]/div[1]/div[3]/div[1]/div[2]/div').text
         daily_low = self.driver.find_element(by=By.XPATH, value = '//*[@class="sc-aef7b723-0 kIYhSM"]/span/span').text
         daily_high = self.driver.find_element(by=By.XPATH, value = '//*[@class = "sc-aef7b723-0 gjeJMv"]/span/span').text
         str_time_stamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%d-%m-%Y, %H:%M:%S")
         coin_img_src = self.driver.find_element(by=By.TAG_NAME, value = 'img').get_attribute('src')
-        self.download_image_from_webpage(coin_img_src, f"images/{coin_name}_{str_time_stamp}.jpg")
+        self.__download_image_from_webpage(coin_img_src, f"images/{coin_name}_{str_time_stamp}.jpg")
                 
         self.data_dict['Name'] = coin_name
         self.data_dict['Price'] = price
@@ -171,10 +163,10 @@ class CoinMarketScraper:
         
         return self.data_dict 
     
-    def download_image_from_webpage(self, coin_img_src, fp):
+    def __download_image_from_webpage(self, coin_img_src, fp):
 
         """
-        This method is called during the scrape_webpage_data() method. This method downloads the image from the the image URL and stores this locally using the os context manager
+        This private method is called during the scrape_webpage_data() method. This method downloads the image from the the image URL and stores this locally using the os context manager
         -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         coin_img_data: .jpg file
             Downloads the image using requests.get
@@ -190,11 +182,10 @@ class CoinMarketScraper:
 
 
     def coin_link_iteration(self):
-        """This method iterates through each coin link collected in the create_list_of_coin_links() and calls the load_coin_webpage() and scrape_webpage_data() methods. The data from each coin link is appended to the self.coin_data list and this list is placed into a .json file and stored locally."""
-        
-        for coin_link in self.coin_link_list: 
-            self.load_coin_webpage(coin_link)
-            self.coin_data.append(self.scrape_webpage_data()) 
+        """This public method iterates through each coin link collected in the create_list_of_coin_links() and calls the private method, scrape_webpage_data() methods. The data from each coin link is appended to the self.coin_data list and this list is placed into a .json file and stored locally."""
+
+        for coin_link in self.coin_link_list[0:2]: 
+            self.coin_data.append(self.__scrape_webpage_data(coin_link)) 
             
 
         if os.path.exists("raw_data") == False: 

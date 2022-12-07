@@ -1,32 +1,22 @@
 [
         {
-                "Name": "Tether",
-                "Price": "$1.00",
-                "Market Cap": "$65,691,866,880",
-                "24hr Trading Volume": "$27,954,775,530",
-                "24hr Price Low": "$1.00",
-                "24hr Price High": "$1.00",
+                "Name": "Ethereum",
+                "Price": "$1,226.46",
+                "Market Cap": "$150,086,294,293",
+                "24hr Trading Volume": "$5,976,501,241",
+                "24hr Price Low": "$1,224.45",
+                "24hr Price High": "$1,272.69",
                 "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "07-12-2022, 09:33:27"
+                "Timestamp": "07-12-2022, 12:31:50"
         },
         {
-                "Name": "Tether",
-                "Price": "$1.00",
-                "Market Cap": "$65,691,866,880",
-                "24hr Trading Volume": "$27,954,775,530",
-                "24hr Price Low": "$1.00",
-                "24hr Price High": "$1.00",
+                "Name": "Ethereum",
+                "Price": "$1,226.46",
+                "Market Cap": "$150,086,294,293",
+                "24hr Trading Volume": "$5,976,501,241",
+                "24hr Price Low": "$1,224.45",
+                "24hr Price High": "$1,272.69",
                 "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "07-12-2022, 09:33:27"
-        },
-        {
-                "Name": "Tether",
-                "Price": "$1.00",
-                "Market Cap": "$65,691,866,880",
-                "24hr Trading Volume": "$27,954,775,530",
-                "24hr Price Low": "$1.00",
-                "24hr Price High": "$1.00",
-                "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "07-12-2022, 09:33:27"
+                "Timestamp": "07-12-2022, 12:31:50"
         }
 ]
