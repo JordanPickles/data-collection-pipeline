@@ -191,7 +191,7 @@ class CoinMarketScraper:
     def coin_link_iteration(self):
         """This public method iterates through each coin link collected in the create_list_of_coin_links() and calls the private method, scrape_webpage_data() methods. The data from each coin link is appended to the self.coin_data list and this list is placed into a .json file and stored locally."""
 
-        for coin_link in self.coin_link_list[0:2]: 
+        for coin_link in self.coin_link_list: 
             self.coin_data.append(self.__scrape_webpage_data(coin_link)) 
             
 
