@@ -1,5 +1,6 @@
-# This imports the packages required to run the code below. This code leverages the selenium packages.
+
 from selenium import webdriver 
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
+
 
 import time
 from datetime import datetime
@@ -22,7 +24,7 @@ class CoinMarketScraper:
         """
         This method initialises the class and passes the following attributes.
         ----------------------------------------------------------------------
-        Options:Variable
+        options:Variable
             Provides a variable to store the arguments passed into the chromedriver
 
         driver: WebDriver.Chrome()
@@ -38,10 +40,10 @@ class CoinMarketScraper:
         coin_link_list: List
             A list of all the cryptocurrency coin page links whoch can then be iterated through to collect data on each coin
         """
-        options = Options()
-        options.add_argument("--headless")
-        options.add_argument("window-size=1920,1080")
-        self.driver = webdriver.Chrome(options = options)
+        self.options = Options()
+        self.options.add_argument("--headless")
+        self.options.add_argument("window-size=1920,1080")
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options = self.options)
         self.url = 'https://coinmarketcap.com/'
         self.page_links_list = [self.url]
         self.coin_link_list = []
