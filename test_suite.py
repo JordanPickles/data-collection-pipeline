@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 import requests
-from CoinMarketCapScraper import CoinMarketScraper
+from coin_market_cap_scraper import CoinMarketScraper
 from selenium import webdriver 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
