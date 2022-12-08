@@ -40,10 +40,14 @@ class CoinMarketScraper:
         coin_link_list: List
             A list of all the cryptocurrency coin page links whoch can then be iterated through to collect data on each coin
         """
-        chrome_options = Options()
+        chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
-        chrome_options.add_argument("window-size=1920,1080")
-        
+        chrome_options.add_argument('--window-size=1920,1080')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-setuid-sandbox") 
+
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options = chrome_options)
         self.url = 'https://coinmarketcap.com/'
         self.page_links_list = [self.url]
