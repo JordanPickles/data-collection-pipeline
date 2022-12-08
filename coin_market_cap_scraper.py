@@ -24,7 +24,7 @@ class CoinMarketScraper:
         """
         This method initialises the class and passes the following attributes.
         ----------------------------------------------------------------------
-        options:Variable
+        chrome_options:Variable
             Provides a variable to store the arguments passed into the chromedriver
 
         driver: WebDriver.Chrome()
@@ -40,10 +40,11 @@ class CoinMarketScraper:
         coin_link_list: List
             A list of all the cryptocurrency coin page links whoch can then be iterated through to collect data on each coin
         """
-        options = Options()
-        options.add_argument("--headless")
-        options.add_argument("window-size=1920,1080")
-        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options = options)
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("window-size=1920,1080")
+        
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options = chrome_options)
         self.url = 'https://coinmarketcap.com/'
         self.page_links_list = [self.url]
         self.coin_link_list = []
