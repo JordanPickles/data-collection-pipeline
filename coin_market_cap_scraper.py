@@ -39,6 +39,9 @@ class CoinMarketScraper:
 
         coin_link_list: List
             A list of all the cryptocurrency coin page links whoch can then be iterated through to collect data on each coin
+        
+        coin_data: List
+            A list of all of the dictionaries collected on each cryptocurrency coin page
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
@@ -52,7 +55,6 @@ class CoinMarketScraper:
         self.url = 'https://coinmarketcap.com/'
         self.page_links_list = [self.url]
         self.coin_link_list = []
-        self.data_dict = {}
         self.coin_data = []
 
 
@@ -129,6 +131,8 @@ class CoinMarketScraper:
         """
         This private method scrapes the data for the desired metric for the coin page loaded. The data is added to the self.data_dict.
         ---------------------------------------------------------------------------------------------------------------------
+        coin_dict: Dict
+            Provides an empty local dictionary for each coin link provided, the data collected for each coin is stored here, once the dictionary is completed, it is added to the self.coin_data list.
         Name: String
             Cryptocurrency Coin Name
         Price: String
@@ -143,11 +147,12 @@ class CoinMarketScraper:
             Cryptocurrency Coin 24 Hour Price Low
         Image url: String
             Cyrptocurrency Coin Image URL's
-        Timestamp: Strinng
+        Timestamp: String
             Timestamp of when Cryptocurrency Coin Data is Scraped
 
         Returns: self.data_dict is returned at the end of the method containing the data scraped from each Cryptocurrency Coin page.
         """
+        coin_dict = {}
         self.driver.get(coin_link)
         try:
             pop_up_button = self.driver.find_element(by=By.XPATH, value = '/html/body/div[3]/div/div/div/div/button[2]')
@@ -164,18 +169,18 @@ class CoinMarketScraper:
         daily_high = self.driver.find_element(by=By.XPATH, value = '//*[@class = "sc-aef7b723-0 gjeJMv"]/span/span').text
         str_time_stamp = datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("%d-%m-%Y, %H:%M:%S")
         coin_img_src = self.driver.find_element(by=By.TAG_NAME, value = 'img').get_attribute('src')
-        self.__download_image_from_webpage(coin_img_src, f"images/{coin_name}_{str_time_stamp}.jpg")
+        self.__download_image_from_webpage(coin_img_src, f"raw_data/images/{coin_name}_{str_time_stamp}.jpg")
                 
-        self.data_dict['Name'] = coin_name
-        self.data_dict['Price'] = price
-        self.data_dict['Market Cap'] = market_cap
-        self.data_dict['24hr Trading Volume'] = daily_volume
-        self.data_dict['24hr Price Low'] = daily_low
-        self.data_dict['24hr Price High'] = daily_high
-        self.data_dict['Image'] = coin_img_src
-        self.data_dict['Timestamp'] = str_time_stamp
+        coin_dict['Name'] = coin_name
+        coin_dict['Price'] = price
+        coin_dict['Market Cap'] = market_cap
+        coin_dict['24hr Trading Volume'] = daily_volume
+        coin_dict['24hr Price Low'] = daily_low
+        coin_dict['24hr Price High'] = daily_high
+        coin_dict['Image'] = coin_img_src
+        coin_dict['Timestamp'] = str_time_stamp
         
-        return self.data_dict 
+        return coin_dict
     
     def __download_image_from_webpage(self, coin_img_src, fp):
 
@@ -185,10 +190,8 @@ class CoinMarketScraper:
         coin_img_data: .jpg file
             Downloads the image using requests.get
         """
-
-        if os.path.exists("images") == False: 
-            os.makedirs("images") 
-
+        if os.path.exists("raw_data/images") == False: 
+            os.makedirs("raw_data/images") 
         coin_img_data = requests.get(coin_img_src).content 
 
         with open(fp, 'wb') as handler: 
@@ -201,7 +204,6 @@ class CoinMarketScraper:
         for coin_link in self.coin_link_list: 
             self.coin_data.append(self.__scrape_webpage_data(coin_link)) 
             
-
         if os.path.exists("raw_data") == False: 
             os.makedirs("raw_data") 
             

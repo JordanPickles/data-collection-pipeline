@@ -56,23 +56,21 @@ class CoinMarketCapScraper(unittest.TestCase):
         self.scraper.webpage_links_iteration()
         self.scraper.coin_link_iteration()
         
-        self.assertIsInstance(self.scraper.data_dict, dict)
-        self.assertAlmostEqual(8, len(self.scraper.data_dict))
-        
-        self.assertIsInstance(self.scraper.data_dict['Name'], str)
-        self.assertIsInstance(self.scraper.data_dict['Price'], str)
-        self.assertIsInstance(self.scraper.data_dict['Market Cap'], str)
-        self.assertIsInstance(self.scraper.data_dict['24hr Trading Volume'], str)
-        self.assertIsInstance(self.scraper.data_dict['24hr Price Low'], str)
-        self.assertIsInstance(self.scraper.data_dict['24hr Price High'], str)
-        self.assertIsInstance(self.scraper.data_dict['Image'], str)
-        self.assertIsInstance(self.scraper.data_dict['Timestamp'], str)
+        self.assertIsInstance(self.scraper.coin_data[0]['Name'], str)
+        self.assertIsInstance(self.scraper.coin_data[0]['Price'], str)
+        self.assertIsInstance(self.scraper.coin_data[0]['Market Cap'], str)
+        self.assertIsInstance(self.scraper.coin_data[0]['24hr Trading Volume'], str)
+        self.assertIsInstance(self.scraper.coin_data[0]['24hr Price Low'], str)
+        self.assertIsInstance(self.scraper.coin_data[0]['24hr Price High'], str)
+        self.assertIsInstance(self.scraper.coin_data[0]['Image'], str)
+        self.assertIsInstance(self.scraper.coin_data[0]['Timestamp'], str)
 
-        assert os.path.isfile('images/' + self.scraper.data_dict['Name'] + '_' + self.scraper.data_dict['Timestamp'] + '.jpg')
+        assert os.path.isfile('raw_data/images/' + self.scraper.coin_data[0]['Name'] + '_' + self.scraper.coin_data[0]['Timestamp'] + '.jpg')
 
         self.assertIsInstance(self.scraper.coin_data, list)
-        self.assertIsInstance(self.scraper.coin_data[1], dict)
-        self.assertEqual(len(self.scraper.coin_data), len(self.scraper.coin_link_list))
+        self.assertIsInstance(self.scraper.coin_data[0], dict)
+        self.assertAlmostEqual(8, len(self.scraper.coin_data[0]))
+        #self.assertEqual(len(self.scraper.coin_data), len(self.scraper.coin_link_list))
         assert os.path.isfile('./raw_data/data.json')
 
 
