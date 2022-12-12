@@ -70,7 +70,7 @@ class CoinMarketCapScraper(unittest.TestCase):
         self.assertIsInstance(self.scraper.coin_data, list)
         self.assertIsInstance(self.scraper.coin_data[0], dict)
         self.assertAlmostEqual(8, len(self.scraper.coin_data[0]))
-        #self.assertEqual(len(self.scraper.coin_data), len(self.scraper.coin_link_list))
+        self.assertEqual(len(self.scraper.coin_data), len(self.scraper.coin_link_list))
         assert os.path.isfile('./raw_data/data.json')
 
 

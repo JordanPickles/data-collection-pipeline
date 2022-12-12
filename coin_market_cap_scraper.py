@@ -50,7 +50,6 @@ class CoinMarketScraper:
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-setuid-sandbox") 
-
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options = chrome_options)
         self.url = 'https://coinmarketcap.com/'
         self.page_links_list = [self.url]
@@ -150,7 +149,7 @@ class CoinMarketScraper:
         Timestamp: String
             Timestamp of when Cryptocurrency Coin Data is Scraped
 
-        Returns: self.data_dict is returned at the end of the method containing the data scraped from each Cryptocurrency Coin page.
+        Returns: coin_dict is returned at the end of the method containing the data scraped from each Cryptocurrency Coin page.
         """
         coin_dict = {}
         self.driver.get(coin_link)
