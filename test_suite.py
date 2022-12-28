@@ -21,14 +21,12 @@ class CoinMarketCapScraper(unittest.TestCase):
 
     def test_load_webpage(self):
         """Ensures the url is loaded correctly, taking in the 'The page loaded successfully' from the CoinMarketScraper class"""
-        self.setUp()
         print("test_load_webpage setup")    
         self.assertEqual('The page was loaded successfully', self.scraper.load_webpage())
     
     def test_create_list_of_webpage_links(self):
         """Tests if the self.page_links_list, (where the page links are appended too) is a list, containing 11 links and that the links are stored as strings"""
         print("test_create_list_of_webpage_links setup")
-        self.setUp()
         self.scraper.create_list_of_webpage_links()
 
         self.assertIsInstance(self.scraper.page_links_list, list)
@@ -39,7 +37,6 @@ class CoinMarketCapScraper(unittest.TestCase):
         """Tests if the links collected in the create_list_of_webpage_links() method can be iterated through to collect a list of coin page links. With there being 100 coins 
         on each page and this iteration taking in the first 2 pages. It is tested that the len of the coin_link_list is 200, that it is a list and that the list contains urls as strings"""
         print("test_webpage_links_iteration")
-        self.setUp()
         self.scraper.create_list_of_webpage_links()
         self.scraper.webpage_links_iteration()
         self.assertIsInstance(self.scraper.coin_link_list, list)
@@ -51,7 +48,6 @@ class CoinMarketCapScraper(unittest.TestCase):
         containing dicts. Whilst the number of dicts in the list is tested to equal the number of coin_links in the coin_link_list. The final test checks that the dat.json file is stored in the correct directory.
         
         This test method also tests the outputs from the private methods self.__scrape_webpage_data() and self.__download_image_from_webpage(). This checks that the data is stored in the correct type and as expected"""
-        self.setUp()
         self.scraper.create_list_of_webpage_links()
         self.scraper.webpage_links_iteration()
         self.scraper.coin_link_iteration()

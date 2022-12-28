@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
+import argparse
 
 
 import time
@@ -15,6 +16,9 @@ from datetime import datetime
 import json
 import os
 import requests
+#TODO idea: maybe you can use the argparse python library to implement a flag that would let the user choose how
+#many coins to scrape. Currently the webscraper collects info from 200 coins if I am not mistaken.  
+# https://docs.python.org/3/library/argparse.html
 
 
 class CoinMarketScraper:
@@ -42,6 +46,9 @@ class CoinMarketScraper:
         
         coin_data: List
             A list of all of the dictionaries collected on each cryptocurrency coin page
+
+        self.num_coins: Object
+            This argument provides a namespace object detailing that data should be collected for the top n coins, default is set at 200
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--headless")
@@ -55,6 +62,11 @@ class CoinMarketScraper:
         self.page_links_list = [self.url]
         self.coin_link_list = []
         self.coin_data = []
+        
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--num-coins', type=int, default = 200)
+        args = parser.parse_args()
+        self.num_coins = args.num_coins
 
 
     def load_webpage(self) -> str: 
@@ -77,7 +89,7 @@ class CoinMarketScraper:
             Locates all of the li tags stored witin the page_number_bar tree. Within these tags, all of the page urls are stored.
         """  
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
-        time.sleep(3)
+        WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[6]/div[1]/div/ul')))
         
         page_number_bar = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[6]/div[1]/div/ul') 
         li_tags = page_number_bar.find_elements(by=By.XPATH, value = '//*[@class="page"]') 
@@ -120,7 +132,7 @@ class CoinMarketScraper:
     def webpage_links_iteration(self): 
         """This method iterates through the page_links_list created in the create_list_of_webpage_links() method and calls the create_list_of_coin_links() after each new page is loaded."""
 
-        for page in self.page_links_list[:2]: #
+        for page in self.page_links_list[:2]:
             self.driver.get(page)
             WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body'))) 
             self.create_list_of_coin_links()
@@ -129,6 +141,9 @@ class CoinMarketScraper:
     def __scrape_webpage_data(self, coin_link) -> dict: 
         """
         This private method scrapes the data for the desired metric for the coin page loaded. The data is added to the self.data_dict.
+        Input: 
+            coin_link: str
+                url of the webpage for the coin to be iterated through
         ---------------------------------------------------------------------------------------------------------------------
         coin_dict: Dict
             Provides an empty local dictionary for each coin link provided, the data collected for each coin is stored here, once the dictionary is completed, it is added to the self.coin_data list.
@@ -185,6 +200,9 @@ class CoinMarketScraper:
 
         """
         This private method is called during the scrape_webpage_data() method. This method downloads the image from the the image URL and stores this locally using the os context manager
+        Input: 
+            coin_img_src: string
+                Image url link collected in the _scrape_webpage_data() method
         -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         coin_img_data: .jpg file
             Downloads the image using requests.get
@@ -198,9 +216,15 @@ class CoinMarketScraper:
 
 
     def coin_link_iteration(self):
-        """This public method iterates through each coin link collected in the create_list_of_coin_links() and calls the private method, scrape_webpage_data() methods. The data from each coin link is appended to the self.coin_data list and this list is placed into a .json file and stored locally."""
+        """This public method iterates through the number of coin links specificed by the args.parse function when running the script (default = top 200 coins) and calls the private method, scrape_webpage_data() for each coin. 
+        The data from each coin link is appended to the self.coin_data list and this data is dumped into a .json file and stored locally."""
+        coin_link_list = []
+        
+        for i in range(self.num_coins):
+            coin_link_list.append(self.coin_link_list.pop(0))
 
-        for coin_link in self.coin_link_list: 
+
+        for coin_link in coin_link_list: 
             self.coin_data.append(self.__scrape_webpage_data(coin_link)) 
             
         if os.path.exists("raw_data") == False: 
