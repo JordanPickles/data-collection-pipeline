@@ -12,4 +12,4 @@ RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
 RUN pip3 install -r requirements.txt
 
-CMD ["python", "coin_market_cap_scraper.py"]
+ENTRYPOINT ["python", "coin_market_cap_scraper.py"]
