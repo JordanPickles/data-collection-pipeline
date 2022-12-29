@@ -7,8 +7,7 @@ CoinMarketCap is the world's most-referenced price-tracking website for cryptoas
 
 
 ## Milestone 1-4: Developing the web scraper
-The project uses chromedriver to control the webpage. Using selenium, this milestone scrapes the links of each page on the webpage and then iterates through each webpage to scrape and collate all of the individual coin page links. These are then added to a list which will then be itterable for collecting data in later milestones.
-
+The project uses chromedriver to control the webpage. Using selenium, this milestone scrapes the links of each page on the webpage and then iterates through each webpage to scrape and collate all of the individual coin page links. These are then added to a list which will then be itterable for collecting data in later milestones. The arg.parse part of this code passes the value into the python application from the docker run CLI (if stated, see milestone 6 for more info) and determines the top (n) number of coins will have data scraped for. If this argument is not stated in the CLI, the default of the top 200 coins will be assumed.
 
 The CoinMarketScraper class was initialised passing through attributes to be used throughout the scraper class by differing methods.
 ```
@@ -325,7 +324,7 @@ The full Coin Market Cap scrper was containerised as a docker image. To run the 
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options = chrome_options)
 ```
 
-To have the data stored locally on your machine a volume should be created in the command line detailing the path in which the data should be stoed locally (see below).
+To have the data stored locally on your machine a volume should be created in the command line detailing the path in which the data should be stoed locally (see below). This CLI includes the --num-coins flag which passes the value into the python application and determines the top (n) number of coins will have data scraped for. If this argument is not stated in the CLI, the default of the top 200 coins will be assumed.
 
 ``` docker run --rm --name <name the container> -v <local file path for data to be saved in>:/scraper/raw_data coin_market_scraper_python_img --num-coins=<number of coins you wish to scrape data for>```
 
