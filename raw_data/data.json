@@ -1,52 +1,12 @@
 [
         {
                 "Name": "Bitcoin",
-                "Price": "$16,612.41",
-                "Market Cap": "$319,717,840,371",
-                "24hr Trading Volume": "$15,957,291,750",
-                "24hr Price Low": "$16,596.87",
-                "24hr Price High": "$16,768.17",
+                "Price": "$16,611.66",
+                "Market Cap": "$319,718,023,188",
+                "24hr Trading Volume": "$15,165,412,912",
+                "24hr Price Low": "$16,497.56",
+                "24hr Price High": "$16,651.76",
                 "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "28-12-2022, 20:57:32"
-        },
-        {
-                "Name": "Ethereum",
-                "Price": "$1,195.30",
-                "Market Cap": "$146,273,575,255",
-                "24hr Trading Volume": "$4,593,885,493",
-                "24hr Price Low": "$1,191.17",
-                "24hr Price High": "$1,213.89",
-                "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "28-12-2022, 20:57:41"
-        },
-        {
-                "Name": "Tether",
-                "Price": "$0.9997",
-                "Market Cap": "$66,230,866,837",
-                "24hr Trading Volume": "$19,918,531,202",
-                "24hr Price Low": "$0.9997",
-                "24hr Price High": "$0.9999",
-                "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "28-12-2022, 20:57:47"
-        },
-        {
-                "Name": "USD Coin",
-                "Price": "$1.00",
-                "Market Cap": "$44,382,792,462",
-                "24hr Trading Volume": "$2,154,340,188",
-                "24hr Price Low": "$0.9998",
-                "24hr Price High": "$1.00",
-                "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "28-12-2022, 20:57:55"
-        },
-        {
-                "Name": "BNB",
-                "Price": "$243.91",
-                "Market Cap": "$39,008,006,530",
-                "24hr Trading Volume": "$405,768,364",
-                "24hr Price Low": "$242.11",
-                "24hr Price High": "$246.84",
-                "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "28-12-2022, 20:58:01"
+                "Timestamp": "29-12-2022, 20:17:42"
         }
 ]

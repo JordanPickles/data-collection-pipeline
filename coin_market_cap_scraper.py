@@ -8,17 +8,13 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
+
 import argparse
-
-
 import time
 from datetime import datetime
 import json
 import os
 import requests
-#TODO idea: maybe you can use the argparse python library to implement a flag that would let the user choose how
-#many coins to scrape. Currently the webscraper collects info from 200 coins if I am not mistaken.  
-# https://docs.python.org/3/library/argparse.html
 
 
 class CoinMarketScraper:
@@ -120,7 +116,7 @@ class CoinMarketScraper:
         WebDriverWait(self.driver, 20,ignored_exceptions=ignored_exceptions).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]'))) 
 
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
-        time.sleep(2)
+        WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[4]/table/tbody')))
         table = self.driver.find_element(by=By.XPATH, value='//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[4]/table/tbody') 
         table_rows = table.find_elements(by=By.XPATH, value = './tr') 
         for coin in table_rows: 
