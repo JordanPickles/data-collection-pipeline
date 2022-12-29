@@ -1,5 +1,5 @@
 # Data Collection Pipeline Project
-Project descripton: "An implementation of an industry grade data collection pipeline that runs scalably in the cloud. It uses Python code to automatically control your browser, extract information from a website, and store it on the cloud in a data warehouses and data lake. The system conforms to industry best practices such as being containerised in Docker and running automated tests."
+Project descripton: "An implementation of an industry grade data collection pipeline that runs scalably in the cloud. It uses Python code to automatically control your browser, extract information from a website, and containerise the application in a docker image. The system conforms to industry best practices such as being containerised in Docker and running automated tests."
 
 This project formulates project 3 of the Ai Core data career accelerator, this project will aim to develop a webscraper to collate data from the website, 'coinmarketcap.com'.
 
@@ -19,7 +19,10 @@ class CoinMarketScraper:
     def __init__(self):
         """
         This method initialises the class and passes the following attributes.
-        ----------------------------------------------
+        ----------------------------------------------------------------------
+        chrome_options:Variable
+            Provides a variable to store the arguments passed into the chromedriver
+
         driver: WebDriver.Chrome()
             This webdriver is used to load and naviagte the webpage allowing the data to be collected
         
@@ -35,12 +38,27 @@ class CoinMarketScraper:
         
         coin_data: List
             A list of all of the dictionaries collected on each cryptocurrency coin page
+
+        self.num_coins: Object
+            This argument provides a namespace object detailing that data should be collected for the top n coins, default is set at 200
         """
-        self.driver = webdriver.Chrome()
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument('--window-size=1920,1080')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-setuid-sandbox") 
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options = chrome_options)
         self.url = 'https://coinmarketcap.com/'
         self.page_links_list = [self.url]
         self.coin_link_list = []
         self.coin_data = []
+        
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--num-coins', type=int, default = 200)
+        args = parser.parse_args()
+        self.num_coins = args.num_coins
         
 ```
 Calling the chromedriver, the coinmarketcap.com url was loaded and a list of the page url's containing cryptocurrency coins data and urls was collected.
@@ -66,7 +84,7 @@ Calling the chromedriver, the coinmarketcap.com url was loaded and a list of the
             Locates all of the li tags stored witin the page_number_bar tree. Within these tags, all of the page urls are stored.
         """  
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
-        time.sleep(3)
+        WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[6]/div[1]/div/ul')))
         
         page_number_bar = self.driver.find_element(by=By.XPATH, value = '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[6]/div[1]/div/ul') 
         li_tags = page_number_bar.find_elements(by=By.XPATH, value = '//*[@class="page"]') 
@@ -100,7 +118,7 @@ The create_list_of_coin_links() method scrapes the url links of all the coins co
         WebDriverWait(self.driver, 20,ignored_exceptions=ignored_exceptions).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]'))) 
 
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
-        time.sleep(2)
+        WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[4]/table/tbody')))
         table = self.driver.find_element(by=By.XPATH, value='//*[@id="__next"]/div/div[1]/div[2]/div/div[1]/div[4]/table/tbody') 
         table_rows = table.find_elements(by=By.XPATH, value = './tr') 
         for coin in table_rows: 
@@ -112,7 +130,7 @@ The create_list_of_coin_links() method scrapes the url links of all the coins co
     def webpage_links_iteration(self): 
         """This method iterates through the page_links_list created in the create_list_of_webpage_links() method and calls the create_list_of_coin_links() after each new page is loaded."""
 
-        for page in self.page_links_list[:2]: #
+        for page in self.page_links_list[:2]:
             self.driver.get(page)
             WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body'))) 
             self.create_list_of_coin_links()
@@ -120,9 +138,12 @@ The create_list_of_coin_links() method scrapes the url links of all the coins co
 Once the list of the coin urls was collected the below methods were created to be called later in the script. The scrape_webpage_data calls the chromedriver to load the url provided by the coin_link_iteration() method and then proceed to use locators within selenium to locate and scrape different data points on each page. The coinmarketcap.com site has a slightly different structure for coins listed 1-10, 11-25 and 25-100. Therefore the locators were chosen to most effectively scrape the data from coin pages in all 3 brackets/sections. The download_image_from_webpage() method downloads the image from the image src scraped on each page and stores it locally using a context manager.
 
 ```
- def __scrape_webpage_data(self, coin_link) -> dict: 
+    def __scrape_webpage_data(self, coin_link) -> dict: 
         """
         This private method scrapes the data for the desired metric for the coin page loaded. The data is added to the self.data_dict.
+        Input: 
+            coin_link: str
+                url of the webpage for the coin to be iterated through
         ---------------------------------------------------------------------------------------------------------------------
         coin_dict: Dict
             Provides an empty local dictionary for each coin link provided, the data collected for each coin is stored here, once the dictionary is completed, it is added to the self.coin_data list.
@@ -143,7 +164,7 @@ Once the list of the coin urls was collected the below methods were created to b
         Timestamp: String
             Timestamp of when Cryptocurrency Coin Data is Scraped
 
-        Returns: self.data_dict is returned at the end of the method containing the data scraped from each Cryptocurrency Coin page.
+        Returns: coin_dict is returned at the end of the method containing the data scraped from each Cryptocurrency Coin page.
         """
         coin_dict = {}
         self.driver.get(coin_link)
@@ -174,16 +195,18 @@ Once the list of the coin urls was collected the below methods were created to b
         coin_dict['Timestamp'] = str_time_stamp
         
         return coin_dict
-
-  def __download_image_from_webpage(self, coin_img_src, fp):
+    
+    def __download_image_from_webpage(self, coin_img_src, fp):
 
         """
         This private method is called during the scrape_webpage_data() method. This method downloads the image from the the image URL and stores this locally using the os context manager
-        ------------------------------------------------------------------------------------------------------------------------------------------------
+        Input: 
+            coin_img_src: string
+                Image url link collected in the _scrape_webpage_data() method
+        -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         coin_img_data: .jpg file
             Downloads the image using requests.get
         """
-        
         if os.path.exists("raw_data/images") == False: 
             os.makedirs("raw_data/images") 
         coin_img_data = requests.get(coin_img_src).content 
@@ -191,21 +214,28 @@ Once the list of the coin urls was collected the below methods were created to b
         with open(fp, 'wb') as handler: 
             handler.write(coin_img_data) 
 
+
 ```
 Finally the coin links previously collated were then iterated through calling the load_coin_page() and scrape_webpage_data() methods to collect the data from each coin_link and then dump that data into local directories in the form of .jpg and .json files.
 
 ```
    def coin_link_iteration(self):
-        """This public method iterates through each coin link collected in the create_list_of_coin_links() and calls the private method, scrape_webpage_data() methods. The data from each coin link is appended to the self.coin_data list and this list is placed into a .json file and stored locally."""
+        """This public method iterates through the number of coin links specificed by the args.parse function when running the script (default = top 200 coins) and calls the private method, scrape_webpage_data() for each coin. 
+        The data from each coin link is appended to the self.coin_data list and this data is dumped into a .json file and stored locally."""
+        coin_link_list = []
+        
+        for i in range(self.num_coins):
+            coin_link_list.append(self.coin_link_list.pop(0))
 
-        for coin_link in self.coin_link_list: 
+
+        for coin_link in coin_link_list: 
             self.coin_data.append(self.__scrape_webpage_data(coin_link)) 
             
         if os.path.exists("raw_data") == False: 
             os.makedirs("raw_data") 
             
         with open("raw_data/data.json", "w") as file: 
-            json.dump(self.coin_data, file,indent=8)  
+            json.dump(self.coin_data, file,indent=8) 
 
 
 if __name__ == '__main__': 
@@ -228,14 +258,12 @@ class CoinMarketCapScraper(unittest.TestCase):
 
     def test_load_webpage(self):
         """Ensures the url is loaded correctly, taking in the 'The page loaded successfully' from the CoinMarketScraper class"""
-        self.setUp()
         print("test_load_webpage setup")    
         self.assertEqual('The page was loaded successfully', self.scraper.load_webpage())
     
     def test_create_list_of_webpage_links(self):
         """Tests if the self.page_links_list, (where the page links are appended too) is a list, containing 11 links and that the links are stored as strings"""
         print("test_create_list_of_webpage_links setup")
-        self.setUp()
         self.scraper.create_list_of_webpage_links()
 
         self.assertIsInstance(self.scraper.page_links_list, list)
@@ -246,7 +274,6 @@ class CoinMarketCapScraper(unittest.TestCase):
         """Tests if the links collected in the create_list_of_webpage_links() method can be iterated through to collect a list of coin page links. With there being 100 coins 
         on each page and this iteration taking in the first 2 pages. It is tested that the len of the coin_link_list is 200, that it is a list and that the list contains urls as strings"""
         print("test_webpage_links_iteration")
-        self.setUp()
         self.scraper.create_list_of_webpage_links()
         self.scraper.webpage_links_iteration()
         self.assertIsInstance(self.scraper.coin_link_list, list)
@@ -258,8 +285,6 @@ class CoinMarketCapScraper(unittest.TestCase):
         containing dicts. Whilst the number of dicts in the list is tested to equal the number of coin_links in the coin_link_list. The final test checks that the dat.json file is stored in the correct directory.
         
         This test method also tests the outputs from the private methods self.__scrape_webpage_data() and self.__download_image_from_webpage(). This checks that the data is stored in the correct type and as expected"""
-        
-        self.setUp()
         self.scraper.create_list_of_webpage_links()
         self.scraper.webpage_links_iteration()
         self.scraper.coin_link_iteration()
@@ -297,13 +322,14 @@ The full Coin Market Cap scrper was containerised as a docker image. To run the 
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-setuid-sandbox") 
-        self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options = chrome_options)````
-
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options = chrome_options)
+```
 
 To have the data stored locally on your machine a volume should be created in the command line detailing the path in which the data should be stoed locally (see below).
 
-``` docker run -it -v <local file path to be save in>:/scraper/raw_data```
+``` docker run --rm --name <name the container> -v <local file path for data to be saved in>:/scraper/raw_data coin_market_scraper_python_img --num-coins=<number of coins you wish to scrape data for>```
+
 
 ## Milestone 7: CI/CD Pipeline for the Docker image
-A github action was created to push all of the updates in the source code were pushed to the Docker image. Every time a commit is to be made to the main branch, a workflow is triggered to rebuild the image. To provide access to the docker hub account, github secrets were created detailing the docker account name and a personal access token (PAT).
+A github action was created to push all of the updates in the source code to the Docker image. Every time a commit is to be made to the main branch, a workflow is triggered to rebuild the image. To provide access to the docker hub account, github secrets were created detailing the docker account name and a personal access token (PAT).
 
