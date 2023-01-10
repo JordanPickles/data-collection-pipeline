@@ -1,12 +1,22 @@
 [
         {
                 "Name": "Bitcoin",
-                "Price": "$16,611.66",
-                "Market Cap": "$319,718,023,188",
-                "24hr Trading Volume": "$15,165,412,912",
-                "24hr Price Low": "$16,497.56",
-                "24hr Price High": "$16,651.76",
+                "Price": "$17,441.49",
+                "Market Cap": "$335,895,514,738",
+                "24hr Trading Volume": "$15,799,176,875",
+                "24hr Price Low": "$17,162.99",
+                "24hr Price High": "$17,484.72",
                 "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
-                "Timestamp": "29-12-2022, 20:17:42"
+                "Timestamp": "10-01-2023, 23:15:11"
+        },
+        {
+                "Name": "Ethereum",
+                "Price": "$1,338.13",
+                "Market Cap": "$163,751,958,766",
+                "24hr Trading Volume": "$5,788,299,201",
+                "24hr Price Low": "$1,317.61",
+                "24hr Price High": "$1,342.76",
+                "Image": "https://s2.coinmarketcap.com/static/cloud/img/loyalty-program/diamond-icon.svg",
+                "Timestamp": "10-01-2023, 23:15:20"
         }
 ]
