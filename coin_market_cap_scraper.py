@@ -62,7 +62,7 @@ class CoinMarketScraper:
         self.coin_data = []
         
         parser = argparse.ArgumentParser()
-        parser.add_argument('--num-coins', type=int, default = 2)
+        parser.add_argument('--num-coins', type=int, default = 200)
         args = parser.parse_args()
         self.num_coins = args.num_coins
 
